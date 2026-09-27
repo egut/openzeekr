@@ -1,0 +1,32 @@
+version: 2
+updates:
+  # Keep the CI workflow's actions current (e.g. Node-24 action majors,
+  # setup-android). Groups minor/patch bumps into one PR to reduce noise.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      github-actions:
+        update-types:
+          - minor
+          - patch
+
+  # Gradle/Android dependencies across :app, :core, :wear. Versions are declared
+  # inline per module, so scan the module directories.
+  - package-ecosystem: gradle
+    directories:
+      - /app
+      - /core
+      - /wear
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    groups:
+      androidx:
+        patterns:
+          - androidx.*
+        update-types:
+          - minor
+          - patch
