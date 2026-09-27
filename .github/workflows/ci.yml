@@ -48,7 +48,8 @@ jobs:
         with:
           packages: ""
 
-      # Same packages CONTRIBUTING.md lists. The NDK + CMake build :core's libozsecrets.so.
+      # Same packages docs/DEVELOPMENT.md lists. The NDK + CMake build :core's libozsecrets.so;
+      # the NDK version must match openzeekr.ndkVersion in gradle.properties.
       - name: Install SDK packages
         run: sdkmanager --install "platform-tools" "platforms;android-34" "build-tools;34.0.0" "ndk;27.0.12077973" "cmake;3.22.1"
 
