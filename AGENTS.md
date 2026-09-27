@@ -17,6 +17,10 @@ cars or accounts.
   wrong, Gradle fails at startup with the exact fix. Read that message instead of
   guessing.
 - **Windows:** use `gradlew.bat` instead of `./gradlew`.
+- **How it fits together:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) covers
+  the flows (startup, cloud signing, digital key, watch handover) and has a
+  **"Change checklist"** of invariants that break silently. Read the relevant
+  section before changing that area.
 
 | Command                                                                           | What it does                                                                   |
 | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
@@ -36,6 +40,10 @@ Before you say a change is finished:
 4. Every user-visible change is in `CHANGELOG.md` under `## [Unreleased]`
    (create that section at the top if it is missing).
 5. The change goes on its own branch with one concern, not on `master`.
+6. The diff was reviewed against this file and the ARCHITECTURE change
+   checklist. Security-sensitive paths get a separate security review. In Claude
+   Code, use the `code-reviewer` and `security-reviewer` agents; other agents
+   can follow the same checklists in `.claude/agents/*.md`.
 
 Say plainly what you could not verify, e.g. "not tested at the car" or "BLE path
 untested". Many features only prove themselves on a real vehicle.
@@ -133,7 +141,9 @@ didn't need to touch.
   - Pick an area listed in `HTTP_TAGS` or `BLE_TAGS` in `util/Logx.kt`, so the
     Settings toggles gate it.
   - Never log tokens, passwords, keys, raw VINs or request bodies. Use
-    `Logx.preview(value)`, or log presence (`auth=yes`).
+    `Logx.preview(value)`, or log presence (`auth=yes`). Pass HTTP bodies and
+    URLs through `HttpLog.scrub()` (`net/ApiClient.kt`). Build new OkHttp
+    loggers with `HttpLog.interceptor()`.
   - Guard expensive or sensitive strings with `Logx.isHttpEnabled` or
     `Logx.isBleEnabled`.
 - **Log export:** `LogCrypto` output is encrypted only. Never add a plaintext

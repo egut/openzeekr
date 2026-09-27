@@ -98,7 +98,16 @@ Please make sure `verify` and `trunk check` pass locally before opening a PR.
 AI coding agents are welcome. Much of this project was written with one. Agent
 instructions live in [AGENTS.md](AGENTS.md), which Claude Code, Kiro, Codex,
 Cursor and Copilot read automatically. `CLAUDE.md` imports it for older Claude
-Code versions, and `.claude/` holds shared permissions and the release skill.
+Code versions. `.claude/` holds:
+
+- shared permissions
+- review, test and build subagents (`.claude/agents/`)
+- path-scoped rules for risky areas (`.claude/rules/`)
+- the release skill
+
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) explains how the parts fit together
+and lists the invariants that break silently. It's worth reading before your
+first change.
 
 The human opening the PR is responsible for it:
 
