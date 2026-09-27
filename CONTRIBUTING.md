@@ -17,6 +17,9 @@ you start.
 - Optionally **[Trunk](https://docs.trunk.io)** for linting (the same checks CI
   runs). Just install the CLI; the config is already committed in `.trunk/`.
 
+Step-by-step install instructions for Linux, macOS and Windows, plus fixes for
+common setup errors, are in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
+
 You do **not** need any real secrets to build. A clean clone builds and runs with
 everything blank; you configure the app in its Settings screen. If you have your
 own extracted secrets, copy the templates:
@@ -89,6 +92,33 @@ Please make sure `verify` and `trunk check` pass locally before opening a PR.
 - Do not commit any secret material (see [SECURITY.md](SECURITY.md)). `trufflehog`
   will flag it, but don't rely on that.
 - Update `CHANGELOG.md` for user-visible changes.
+
+## AI-assisted contributions
+
+AI coding agents are welcome. Much of this project was written with one. Agent
+instructions live in [AGENTS.md](AGENTS.md), which Claude Code, Kiro, Codex,
+Cursor and Copilot read automatically. `CLAUDE.md` imports it for older Claude
+Code versions. `.claude/` holds:
+
+- shared permissions
+- review, test and build subagents (`.claude/agents/`)
+- path-scoped rules for risky areas (`.claude/rules/`)
+- the release skill
+
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) explains how the parts fit together
+and lists the invariants that break silently. It's worth reading before your
+first change.
+
+The human opening the PR is responsible for it:
+
+- Review the diff. Pay special attention to the security-sensitive paths listed
+  in AGENTS.md.
+- Run `verify` yourself, and test at the car when the change affects vehicle
+  behaviour.
+- Keep the agent's `Co-Authored-By:` trailer so reviewers know.
+
+When an agent gets something wrong twice, fix AGENTS.md in the same PR. Keep it
+short and concrete.
 
 ## Reporting security issues
 

@@ -73,10 +73,10 @@ android {
     namespace = "com.openzeekr.core"
     compileSdk = 34
 
-    // Build the native secrets lib (libozsecrets.so). NOTE: ndkVersion must match an NDK installed
-    // under the SDK (Android Studio > SDK Manager > NDK), or change it to your installed version /
-    // remove this line to use AGP's default. An unavailable NDK version fails the native build.
-    ndkVersion = "27.0.12077973"
+    // Build the native secrets lib (libozsecrets.so). The NDK version is pinned once, in
+    // gradle.properties (openzeekr.ndkVersion), and must be installed under the SDK
+    // (Android Studio > SDK Manager > NDK). An unavailable NDK version fails the native build.
+    ndkVersion = providers.gradleProperty("openzeekr.ndkVersion").get()
 
     defaultConfig {
         minSdk = 26

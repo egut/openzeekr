@@ -12,6 +12,7 @@
 - [ ] `./gradlew verify` (`gradlew.bat verify` on Windows) passes on a clean clone
 - [ ] `trunk check` is clean
 - [ ] If `lint-baseline.xml` changed, the PR explains why
+- [ ] If an AI agent helped: I reviewed the whole diff and kept the co-author trailer
 
 ## Security checklist
 
