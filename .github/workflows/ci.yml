@@ -1,11 +1,17 @@
 name: CI
 
 # Runs exactly the checks a contributor runs locally:
-#   ./gradlew verify        (Linux/macOS)
-#   gradlew.bat verify      (Windows)
+#   ./gradlew verify   (gradlew.bat verify on Windows)
 #   trunk check
 # The Gradle tasks are defined once in the root build.gradle.kts, so "passes locally"
 # and "passes CI" mean the same thing.
+#
+# Linux only, on purpose. Windows runners bill at 2x minutes and roughly doubled the
+# wall-clock time of this workflow for a build that is not platform-specific. Windows
+# is still a supported DEVELOPMENT platform (gradlew.bat, .editorconfig and the LF/CRLF
+# rules in .gitattributes all cover it) — it is just not continuously verified here.
+# If a Windows-only regression is suspected, run `gradlew.bat verify` locally, or
+# trigger this workflow manually after temporarily adding windows-latest.
 on:
   push:
     branches: [master, main]
@@ -21,16 +27,9 @@ permissions:
 
 jobs:
   verify:
-    name: Gradle verify (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-            gradlew: ./gradlew
-          - os: windows-latest
-            gradlew: .\gradlew.bat
+    name: Gradle verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
@@ -60,13 +59,13 @@ jobs:
       # The build must still succeed with every secret blank (the app then starts
       # unconfigured). --continue reports every failing step, not just the first.
       - name: Build, unit test, Android Lint
-        run: ${{ matrix.gradlew }} --continue verify
+        run: ./gradlew --continue verify
 
       - name: Upload reports
         if: always()
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
-          name: reports-${{ matrix.os }}
+          name: reports
           path: |
             **/build/reports/**
             **/build/test-results/**
@@ -76,6 +75,7 @@ jobs:
   static-analysis:
     name: Trunk static analysis & security
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0

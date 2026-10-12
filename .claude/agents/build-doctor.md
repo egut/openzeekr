@@ -40,7 +40,7 @@ checks as CI, find the root cause of each failure, and fix it or explain it.
    | `Aborting build since new baseline file was created`                    | A `lint-baseline.xml` is missing. Regenerate with `./gradlew updateLintBaseline`, and tell the user to commit it.               |
    | Trunk `Incorrect formatting`                                            | `trunk fmt <file>`. If the file had never been formatted, the reformat is a separate `style:` commit (AGENTS.md, "Formatting"). |
    | Trunk trufflehog finding                                                | Stop. Report file and line only, never the value. Treat it as a leaked secret.                                                  |
-   | Works locally, fails in CI                                              | Compare JDK, SDK packages and OS (CI runs Ubuntu and Windows). Check path separators, line endings and case-sensitive paths.    |
+   | Works locally, fails in CI                                              | Compare JDK and SDK packages (CI runs Ubuntu only). Check case-sensitive paths and line endings.                                |
 
 3. After any fix, re-run the failing task, then the full `verify`.
 4. If the failure is in `.github/workflows/ci.yml`, keep CI calling the same
@@ -52,4 +52,5 @@ checks as CI, find the root cause of each failure, and fix it or explain it.
 - Each failure: root cause → what you changed (`file:line`), or why it needs the
   user (environment, secrets, a design decision).
 - Anything left unverified, e.g. the release/R8 build (`./gradlew assembleRelease`)
-  or Windows-only behaviour.
+  or Windows-only behaviour (CI does not cover Windows; say so rather than implying
+  it was checked).
